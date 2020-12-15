@@ -4,7 +4,8 @@ using UnityEngine;
 using System;
 public class ChemicalCollsionDetection : MonoBehaviour
 {
-    public String tag;
+    public String osc_adr;
+    public OSC osc;
     // Start is called before the first frame update
     // void Start()
     // {
@@ -17,10 +18,21 @@ public class ChemicalCollsionDetection : MonoBehaviour
     // }
 
     void OnCollisionEnter(Collision col){
-        Debug.Log("A collision: " + tag + "; " + col.gameObject.name);
+        OscMessage msg = new OscMessage();
+        msg.address = osc_adr;
+        msg.values.Add((float)1);
+        osc.Send(msg);
+        msg = null;
+        Debug.Log("A collision: " + osc_adr + "; " + col.gameObject.name);
     }
 
     void OnTriggerEnter(Collider col){
-        Debug.Log("A trigger: " + tag + "; " + col.gameObject.name);
+        OscMessage msg = new OscMessage();
+        msg.address = osc_adr;
+        msg.values.Add((float)1);
+        osc.Send(msg);
+        msg = null;
+        
+        Debug.Log("A trigger: " + osc_adr + "; " + col.gameObject.name);
     }
 }

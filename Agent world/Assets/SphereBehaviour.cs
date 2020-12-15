@@ -5,7 +5,7 @@ using UnityEngine;
 public class SphereBehaviour : MonoBehaviour, IPooledObject
 {
     public float upForce = .01f;
-    public float sideForce = .01f;
+    public float sideForce = .1f;
     public int lifeTimeMax = 200;
     public int lifeTimeMin = 100;
     public int life;
