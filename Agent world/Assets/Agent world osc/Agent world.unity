@@ -164,51 +164,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5da07da6c25a65249aa4f03d5ed92684, type: 3}
---- !u!1 &38402832
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 38402833}
-  - component: {fileID: 38402834}
-  m_Layer: 0
-  m_Name: ControlReceiver
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &38402833
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 38402832}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1463285702}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &38402834
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 38402832}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afb973da45dc1dea5950912f6558623a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  osc: {fileID: 0}
-  controller: {fileID: 0}
 --- !u!1001 &78461796
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -289,7 +244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inPort: 1133
   outIP: 127.0.0.1
-  outPort: 12001
+  outPort: 6000
   maxPktSize: 9200
 --- !u!20 &95576269
 Camera:
@@ -1093,7 +1048,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f609be785e89a4f60a4e2f7de8d0003c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  osc_adr: /chem/left/
+  osc_adr: /chem/left
   osc: {fileID: 1463285705}
 --- !u!1 &301915421
 GameObject:
@@ -8887,7 +8842,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f609be785e89a4f60a4e2f7de8d0003c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  osc_adr: /chem/right/
+  osc_adr: /chem/right
   osc: {fileID: 1463285705}
 --- !u!1 &1374409766
 GameObject:
@@ -9293,7 +9248,6 @@ Transform:
   - {fileID: 95576271}
   - {fileID: 1374409767}
   - {fileID: 830170578}
-  - {fileID: 38402833}
   - {fileID: 1755839442}
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -9333,6 +9287,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   osc: {fileID: 1463285705}
   controller: {fileID: 1463285701}
+  playerBody: {fileID: 1463285702}
 --- !u!114 &1463285705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9347,7 +9302,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inPort: 12002
   outIP: 127.0.0.1
-  outPort: 6161
+  outPort: 12001
   maxPktSize: 9200
 --- !u!4 &1469384964 stripped
 Transform:
@@ -14856,7 +14811,7 @@ Transform:
   - {fileID: 1930414740}
   - {fileID: 260384568}
   m_Father: {fileID: 1463285702}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1794175764
 GameObject:

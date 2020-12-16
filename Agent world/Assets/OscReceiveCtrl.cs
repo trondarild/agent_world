@@ -6,6 +6,8 @@ public class OscReceiveCtrl : MonoBehaviour
 {
     public OSC osc;
     public CharacterController controller;
+    public Transform playerBody;
+    // public float rotation=0;
     // Start is called before the first frame update
     void Start()
     {
@@ -53,13 +55,19 @@ public class OscReceiveCtrl : MonoBehaviour
 
     void OnBackward(OscMessage message){
         float x = message.GetFloat(0);
+        Vector3 move = transform.forward * -x; 
+        controller.Move(move * Time.deltaTime);
     }
 
     void OnRotLeft(OscMessage message){
         float x = message.GetFloat(0);
+        float rotation = -x*Time.deltaTime;
+        playerBody.Rotate(Vector3.up * rotation);
     }
 
     void OnRotRight(OscMessage message){
         float x = message.GetFloat(0);
+        float rotation = x*Time.deltaTime;
+        playerBody.Rotate(Vector3.up * rotation);
     }
 }
