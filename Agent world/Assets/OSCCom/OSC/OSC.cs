@@ -808,7 +808,7 @@ public class UDPPacketIO
         tag.Append(",");
         int tagIndex = index;
         index += PadSize(2 + oscM.values.Count);
-        Debug.Log("## start: " + start + "; index: " + index + "; num values: " + oscM.values.Count);
+        // Debug.Log("## start: " + start + "; index: " + index + "; num values: " + oscM.values.Count);
         foreach (object o in oscM.values)
         {
           if (o is int)

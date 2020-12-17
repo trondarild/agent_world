@@ -33,6 +33,6 @@ public class ChemicalCollsionDetection : MonoBehaviour
         osc.Send(msg);
         msg = null;
         
-        Debug.Log("A trigger: " + osc_adr + "; " + col.gameObject.name);
+        // Debug.Log("A trigger: " + osc_adr + "; " + col.gameObject.name);
     }
 }
