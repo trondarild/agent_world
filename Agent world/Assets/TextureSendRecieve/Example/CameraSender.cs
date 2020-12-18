@@ -7,7 +7,7 @@ using UnityEngine.Video;
 namespace TextureSendReceive {
 	[RequireComponent(typeof(Camera), typeof(TextureSender))]
 	public class CameraSender : MonoBehaviour {
-		Camera camera;
+		Camera cam;
 		TextureSender sender;
 		Texture2D sendTexture;
 		RenderTexture videoTexture;
@@ -16,10 +16,10 @@ namespace TextureSendReceive {
 
 		// Use this for initialization
 		void Start () {
-			camera = GetComponent<Camera>();
+			cam = GetComponent<Camera>();
 			sender = GetComponent<TextureSender>();
 
-			sendTexture = new Texture2D((int)camera.targetTexture.width, (int)camera.targetTexture.width);
+			sendTexture = new Texture2D((int)cam.targetTexture.width, (int)GetComponent<Camera>().targetTexture.width);
 			
 			// Set send texture
 			sender.SetSourceTexture(sendTexture);
@@ -27,11 +27,11 @@ namespace TextureSendReceive {
 		
 		// Update is called once per frame
 		void Update () {
-			RenderTexture.active = camera.targetTexture;
-			sendTexture.ReadPixels(new Rect(0, 0, camera.targetTexture.width, camera.targetTexture.height), 0, 0, false);
+			RenderTexture.active = cam.targetTexture;
+			sendTexture.ReadPixels(new Rect(0, 0, GetComponent<Camera>().targetTexture.width, GetComponent<Camera>().targetTexture.height), 0, 0, false);
 				
 			// Set preview image target
-			image.texture = camera.targetTexture;
+			image.texture = cam.targetTexture;
 		}
 	}
 }

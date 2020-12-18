@@ -28,18 +28,19 @@ public class MetabolismSim : MonoBehaviour
         energyStore -= energyRate;
         transientEnergyRate = 0;
 
-        OscMessage msg = new OscMessage();
-        msg.address = osc_adr + "/energyrate/";
-        msg.values.Add((float)energyRate);
-        osc.Send(msg);
+        OscMessage ermsg = new OscMessage();
+        ermsg.address = osc_adr + "/energyrate";
+        ermsg.values.Add((float)energyRate);
+        osc.Send(ermsg);
 
-        msg = null;
-        msg = new OscMessage();
-        msg.address = osc_adr + "/energystore/";
-        msg.values.Add((float)energyStore);
-        osc.Send(msg);
-        msg = null;
-
+        
+        OscMessage esmsg = new OscMessage();
+        esmsg.address = osc_adr + "/energystore";
+        esmsg.values.Add((float)energyStore);
+        osc.Send(esmsg);
+        
+        esmsg = null;
+        ermsg = null;
     }
 
     public void Eat(float aenergy) => EnergyStore += aenergy;

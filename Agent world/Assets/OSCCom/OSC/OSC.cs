@@ -617,7 +617,7 @@ public class UDPPacketIO
     {
       byte[] packet = new byte[maxPktSize];
       int length = OSC.OscMessageToPacket( oscMessage, packet, maxPktSize );
-      // Debug.Log("***Send: " + packet + "; " + length + "; " + OscPacketIO.ToString());
+      //Debug.Log("***Send: " + packet + "; " + length + "; " + OscPacketIO.ToString());
 
       OscPacketIO.SendPacket( packet, length);
     }
