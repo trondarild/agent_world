@@ -27,9 +27,16 @@ public class ChemicalCollsionDetection : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider col){
+        // turn on
         OscMessage msg = new OscMessage();
         msg.address = osc_adr;
         msg.values.Add((float)1);
+        osc.Send(msg);
+        msg = null;
+        // turn off
+        msg = new OscMessage();
+        msg.address = osc_adr;
+        msg.values.Add((float)0);
         osc.Send(msg);
         msg = null;
         
