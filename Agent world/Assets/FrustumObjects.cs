@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class FrustumObjects : MonoBehaviour
 {
@@ -25,7 +26,7 @@ public class FrustumObjects : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        List<GameObject> Visible = new List<GameObject>();   
+        List<Tuple<Vector3, Vector3>> Visible = new List<Tuple<Vector3, Vector3>>();   
         foreach (GameObject target in Targets)
         {
  
@@ -37,16 +38,21 @@ public class FrustumObjects : MonoBehaviour
                 // calculate relative coords to each object
                 var positionDifference = target.transform.InverseTransformPoint(displayCamera.transform.position);
 
-                print(target.name + " rel pos: " + positionDifference + " box: " + target.GetComponent<Collider>().bounds.extents);
-                Visible.Add(target);
+                // print(target.name + " rel pos: " + positionDifference + " box: " + target.GetComponent<Collider>().bounds.extents);
+                Visible.Add(Tuple.Create(positionDifference, target.GetComponent<Collider>().bounds.extents));
             }
-            else
-            {
-                //print("The object" + target.name + "has disappeared");
-                // target.GetComponent<MeshRenderer>().enabled = false;
-            }
+            // else
+            // {
+            //     //print("The object" + target.name + "has disappeared");
+            //     // target.GetComponent<MeshRenderer>().enabled = false;
+            // }
  
         }
         print ("visible obj: " + Visible.Count);
+        // TODO send over osc
+        foreach (Tuple<Vector3, Vector3> obj in Visible)
+        {
+            print ("center: " + obj.Item1 + "; box: " + obj.Item2);
+        }
     }
 }
