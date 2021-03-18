@@ -26,6 +26,7 @@ public class FrustumObjects : MonoBehaviour
         Borders = GameObject.FindGameObjectsWithTag("Border");
         Obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
         Goals = GameObject.FindGameObjectsWithTag("Goal");
+        //Agent = GameObject.FindGameObjectsWithTag("Agent")
     }
 
     List<Tuple<Vector3, Vector3>>  FindFrustumObjects(GameObject []collection)
@@ -71,4 +72,49 @@ public class FrustumObjects : MonoBehaviour
 
         // send collections over osc
     }
+
+    void SendMessage(String label, List<Tuple<Vector3, Vector3>>  data)
+    {
+        OscMessage m = new OscMessage();
+        m.address = label;
+        
+
+        foreach (Tuple<Vector3, Vector3> obj in data)
+        {
+            Vector3 coord = obj.Item1;
+            Vector3 bbox = obj.Item2;
+            // only add x and z values, y is up
+            m.values.Add((float)coord[0]);
+            m.values.Add((float)coord[2]);
+
+            m.values.Add((float)bbox[0]);
+            m.values.Add((float)bbox[2]);
+        }
+        osc.Send(m);
+        
+    }
+
+    void CalculateLocalBounds(GameObject []objects)
+     {
+        GameObject parent = new GameObject();
+        Quaternion currentRotation = parent.transform.rotation;
+        parent.transform.rotation = Quaternion.Euler(0f,0f,0f);
+        
+        foreach( GameObject obj in objects)
+        {
+            obj.transform.parent = parent.transform;
+        }
+        Bounds bounds = new Bounds(parent.transform.position, Vector3.zero);
+ 
+        foreach(Renderer renderer in parent.GetComponentsInChildren<Renderer>())
+        {
+            bounds.Encapsulate(renderer.bounds);
+        }
+ 
+        Vector3 localCenter = bounds.center - parent.transform.position;
+        bounds.center = localCenter;
+        Debug.Log("The local bounds of this model is " + bounds);
+ 
+        this.transform.rotation = currentRotation;
+     }
 }
