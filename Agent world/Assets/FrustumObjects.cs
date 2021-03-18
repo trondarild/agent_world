@@ -8,7 +8,10 @@ public class FrustumObjects : MonoBehaviour
 
     public Camera displayCamera;
  
-    public GameObject []Targets;
+    public GameObject []Borders;
+    public GameObject []Obstacles;
+    public GameObject []Goals;
+    public OSC osc;
 
     
  
@@ -20,14 +23,15 @@ public class FrustumObjects : MonoBehaviour
             displayCamera = Camera.main;
         }
  
-        Targets = GameObject.FindGameObjectsWithTag("Target");
+        Borders = GameObject.FindGameObjectsWithTag("Border");
+        Obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
+        Goals = GameObject.FindGameObjectsWithTag("Goal");
     }
- 
-    // Update is called once per frame
-    void Update()
+
+    List<Tuple<Vector3, Vector3>>  FindFrustumObjects(GameObject []collection)
     {
-        List<Tuple<Vector3, Vector3>> Visible = new List<Tuple<Vector3, Vector3>>();   
-        foreach (GameObject target in Targets)
+        List<Tuple<Vector3, Vector3>> Collected = new List<Tuple<Vector3, Vector3>>();   
+        foreach (GameObject target in collection)
         {
  
             Plane[] planes = GeometryUtility.CalculateFrustumPlanes(displayCamera);
@@ -39,7 +43,7 @@ public class FrustumObjects : MonoBehaviour
                 var positionDifference = target.transform.InverseTransformPoint(displayCamera.transform.position);
 
                 // print(target.name + " rel pos: " + positionDifference + " box: " + target.GetComponent<Collider>().bounds.extents);
-                Visible.Add(Tuple.Create(positionDifference, target.GetComponent<Collider>().bounds.extents));
+                Collected.Add(Tuple.Create(positionDifference, target.GetComponent<Collider>().bounds.extents));
             }
             // else
             // {
@@ -48,11 +52,23 @@ public class FrustumObjects : MonoBehaviour
             // }
  
         }
-        print ("visible obj: " + Visible.Count);
+        print ("visible obj: " + Collected.Count);
         // TODO send over osc
-        foreach (Tuple<Vector3, Vector3> obj in Visible)
+        foreach (Tuple<Vector3, Vector3> obj in Collected)
         {
             print ("center: " + obj.Item1 + "; box: " + obj.Item2);
         }
+        return Collected;
+    }
+    
+ 
+    // Update is called once per frame
+    void Update()
+    {
+        var CollectedBorders = FindFrustumObjects(Borders);
+        var CollectedObstacles = FindFrustumObjects(Obstacles);
+        var CollectedGoals = FindFrustumObjects(Goals);
+
+        // send collections over osc
     }
 }
