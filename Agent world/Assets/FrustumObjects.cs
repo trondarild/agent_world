@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+
 public class FrustumObjects : MonoBehaviour
 {
 
@@ -28,6 +29,14 @@ public class FrustumObjects : MonoBehaviour
         Goals = GameObject.FindGameObjectsWithTag("Goal");
         //Agent = GameObject.FindGameObjectsWithTag("Agent")
     }
+    // List<Tuple<Vector3, Vector3>>  GetBBox(GameObject []collection)
+    // {
+    //     List<Tuple<Vector3, Vector3>> Collected = new List<Tuple<Vector3, Vector3>>();   
+    //     foreach (GameObject target in collection)
+    //     {
+    //         Collected.Add(Tuple.Create(positionDifference, target.GetComponent<Collider>().bounds.extents));
+    //     }
+    // }
 
     List<Tuple<Vector3, Vector3>>  FindFrustumObjects(GameObject []collection)
     {
@@ -66,19 +75,23 @@ public class FrustumObjects : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var CollectedBorders = FindFrustumObjects(Borders);
-        var CollectedObstacles = FindFrustumObjects(Obstacles);
-        var CollectedGoals = FindFrustumObjects(Goals);
+        var collectedBorders = FindFrustumObjects(Borders);
+        var collectedObstacles = FindFrustumObjects(Obstacles);
+        var collectedGoals = FindFrustumObjects(Goals);
+
+        var bboxes =  CalculateLocalBounds(Borders);
 
         // send collections over osc
+        SendMsg("/borders/", bboxes);
     }
 
-    void SendMessage(String label, List<Tuple<Vector3, Vector3>>  data)
+    void SendMsg(String label, List<Tuple<Vector3, Vector3>>  data)
     {
         OscMessage m = new OscMessage();
         m.address = label;
         
-
+        print("data: " + data.Count);
+        String dbg = "";
         foreach (Tuple<Vector3, Vector3> obj in data)
         {
             Vector3 coord = obj.Item1;
@@ -86,16 +99,18 @@ public class FrustumObjects : MonoBehaviour
             // only add x and z values, y is up
             m.values.Add((float)coord[0]);
             m.values.Add((float)coord[2]);
-
+            dbg += coord[0] + ", " + coord[2] + ", ";
             m.values.Add((float)bbox[0]);
             m.values.Add((float)bbox[2]);
+            dbg += bbox[0] + ", " + bbox[2] + "; ";
         }
+        print (dbg);
         osc.Send(m);
         
     }
 
-    void CalculateLocalBounds(GameObject []objects)
-     {
+    List<Tuple<Vector3, Vector3>>  CalculateLocalBounds(GameObject []objects)
+    {
         GameObject parent = new GameObject();
         Quaternion currentRotation = parent.transform.rotation;
         parent.transform.rotation = Quaternion.Euler(0f,0f,0f);
@@ -105,16 +120,27 @@ public class FrustumObjects : MonoBehaviour
             obj.transform.parent = parent.transform;
         }
         Bounds bounds = new Bounds(parent.transform.position, Vector3.zero);
- 
+
         foreach(Renderer renderer in parent.GetComponentsInChildren<Renderer>())
         {
             bounds.Encapsulate(renderer.bounds);
         }
- 
+
         Vector3 localCenter = bounds.center - parent.transform.position;
         bounds.center = localCenter;
         Debug.Log("The local bounds of this model is " + bounds);
- 
+
         this.transform.rotation = currentRotation;
-     }
+
+        List<Tuple<Vector3, Vector3>> retval = new List<Tuple<Vector3, Vector3>>() ;
+        
+        foreach(GameObject obj in objects)
+        {
+            Vector3 coord = obj.transform.position - localCenter / 2.0F;
+            Vector3 bbox = obj.GetComponent<Collider>().bounds.extents;
+            retval.Add(Tuple.Create(coord, bbox));
+            
+        }
+        return retval;
+    }
 }
