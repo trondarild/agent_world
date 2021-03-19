@@ -136,7 +136,7 @@ public class FrustumObjects : MonoBehaviour
         
         foreach(GameObject obj in objects)
         {
-            Vector3 coord = obj.transform.position - localCenter / 2.0F;
+            Vector3 coord = obj.transform.localPosition - localCenter/ 2.0F;
             Vector3 bbox = obj.GetComponent<Collider>().bounds.extents;
             retval.Add(Tuple.Create(coord, bbox));
             
