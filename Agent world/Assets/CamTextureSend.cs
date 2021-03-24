@@ -17,6 +17,11 @@ public class CamTextureSend : MonoBehaviour
 	
 	 public OSC osc;
 	 public int maxSz = 24;
+	 public bool send_depth=true;
+	 public bool send_right=true;
+	 public bool send_left=true;
+	 enum PixelType {eRGB, eGray};
+
 
 	void Start () {
 		//osc = new OSC();
@@ -34,23 +39,37 @@ public class CamTextureSend : MonoBehaviour
 
     // Update is called once per frame
 	void Update(){
-		SendCamera(sourceCamLeft,
-					"left");
-		SendCamera(sourceCamRight,
-					"right");
+		// left cam can send depth image; send and turn off
+		if(send_depth){
+			sourceCamLeft.GetComponent<RenderDepth>().enabled = true;
+			SendCamera(sourceCamLeft,
+						"left/depth", eGray);
+			sourceCamLeft.GetComponent<RenderDepth>().enabled = false;	
+		}
+		if(send_left)
+			SendCamera(sourceCamLeft,
+					"left", eRGB);			
+		if(send_right)
+			SendCamera(sourceCamRight,
+					"right", eRGB);
 	}
 
     void SendCamera(//Texture2D sendTexture,
 					//RenderTexture renderTexture,
 					Camera sourceCam,
-					String msgTag) {
+					String msgTag,
+					PixelType pxType) {
     		RenderTexture renderTexture = new RenderTexture(sourceCam.pixelWidth, sourceCam.pixelHeight, 24);
     		sourceCam.targetTexture = renderTexture;
     		sourceCam.Render();
     		RenderTexture.active = renderTexture;
     		Rect r = new Rect(0, 0, renderTexture.width, renderTexture.height);
-    		
-    		Texture2D sendTexture = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);	
+    		var textureFormat;
+			if(pxType == eRGB)
+				textureFormat = TextureFormat.RGB24;
+			else
+				textureFormat = TextureFormat.R8;
+    		Texture2D sendTexture = new Texture2D(renderTexture.width, renderTexture.height, textureFormat, false);	
     		sendTexture.ReadPixels(r, 0, 0);
  			sendTexture.Apply();
  			
@@ -66,33 +85,54 @@ public class CamTextureSend : MonoBehaviour
     		//debug("**after pixels = ", pixels);
     		float[] pixelvals = new float[maxSz*maxSz];
     		//Debug.Log("***Pixels: " + pixels.ToString());
-    		
-        // get texture and send it over osc
-        OscMessage message_r;
-        OscMessage message_g;
-        OscMessage message_b;
+    	if(pxType = eRGB){
+			// get texture and send it over osc
+			OscMessage message_r;
+			OscMessage message_g;
+			OscMessage message_b;
 
-        message_r = new OscMessage();
-        message_g = new OscMessage();
-        message_b = new OscMessage();
-        message_r.address = "/" + msgTag + "/camera_r";
-        message_g.address = "/" + msgTag + "/camera_g";
-        message_b.address = "/" + msgTag + "/camera_b";
-        //for(int i=0; i<renderTexture.width * renderTexture.height; i++){
-        //Debug.Log("osc update, pixel length: " + pixels.Length);	
-        for(int i=0; i<Mathf.Min(pixels.Length, maxSz*maxSz); i++){
-    			message_r.values.Add((float)pixels[i].r);
-    			message_g.values.Add((float)pixels[i].g);
-    			message_b.values.Add((float)pixels[i].b);
-    	  }
-        //message.values.Add(pixelvals);
-        osc.Send(message_r);
-        osc.Send(message_g);
-        osc.Send(message_b);
-        //DestroyImmediate(renderTexture);
-        message_r = null;
-        message_g = null;
-        message_b = null;
+			message_r = new OscMessage();
+			message_g = new OscMessage();
+			message_b = new OscMessage();
+			message_r.address = "/" + msgTag + "/camera_r";
+			message_g.address = "/" + msgTag + "/camera_g";
+			message_b.address = "/" + msgTag + "/camera_b";
+			//for(int i=0; i<renderTexture.width * renderTexture.height; i++){
+			//Debug.Log("osc update, pixel length: " + pixels.Length);	
+			for(int i=0; i<Mathf.Min(pixels.Length, maxSz*maxSz); i++){
+					message_r.values.Add((float)pixels[i].r);
+					message_g.values.Add((float)pixels[i].g);
+					message_b.values.Add((float)pixels[i].b);
+			}
+			//message.values.Add(pixelvals);
+			osc.Send(message_r);
+			osc.Send(message_g);
+			osc.Send(message_b);
+			//DestroyImmediate(renderTexture);
+			message_r = null;
+			message_g = null;
+			message_b = null;
+		}
+		else{
+			 // get texture and send it over osc
+			OscMessage message_r;
+			
+			message_r = new OscMessage();
+			message_r.address = "/" + msgTag + "/camera";
+			//for(int i=0; i<renderTexture.width * renderTexture.height; i++){
+			//Debug.Log("osc update, pixel length: " + pixels.Length);	
+			for(int i=0; i<Mathf.Min(pixels.Length, maxSz*maxSz); i++){
+					message_r.values.Add((float)pixels[i].r);
+					
+			}
+			//message.values.Add(pixelvals);
+			osc.Send(message_r);
+			//DestroyImmediate(renderTexture);
+			message_r = null;
+			
+		}
+		
+       
 
 		renderTexture = null;
 		sendTexture = null;
