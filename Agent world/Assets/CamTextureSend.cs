@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TextureSendReceive;
+// using TextureSendReceive;
 using System;
 public class CamTextureSend : MonoBehaviour
 {
     // Start is called before the first frame update
-    TextureSender sender;
+    //TextureSender sender;
 	//public Texture2D sendTextureLeft;
 	//public RenderTexture renderTextureLeft;
 	public Camera sourceCamLeft;
@@ -43,15 +43,15 @@ public class CamTextureSend : MonoBehaviour
 		if(send_depth){
 			sourceCamLeft.GetComponent<RenderDepth>().enabled = true;
 			SendCamera(sourceCamLeft,
-						"left/depth", eGray);
+						"left/depth", PixelType.eGray);
 			sourceCamLeft.GetComponent<RenderDepth>().enabled = false;	
 		}
 		if(send_left)
 			SendCamera(sourceCamLeft,
-					"left", eRGB);			
+					"left", PixelType.eRGB);			
 		if(send_right)
 			SendCamera(sourceCamRight,
-					"right", eRGB);
+					"right", PixelType.eRGB);
 	}
 
     void SendCamera(//Texture2D sendTexture,
@@ -64,8 +64,8 @@ public class CamTextureSend : MonoBehaviour
     		sourceCam.Render();
     		RenderTexture.active = renderTexture;
     		Rect r = new Rect(0, 0, renderTexture.width, renderTexture.height);
-    		var textureFormat;
-			if(pxType == eRGB)
+    		var textureFormat = TextureFormat.RGB24;
+			if(pxType == PixelType.eRGB)
 				textureFormat = TextureFormat.RGB24;
 			else
 				textureFormat = TextureFormat.R8;
@@ -85,7 +85,7 @@ public class CamTextureSend : MonoBehaviour
     		//debug("**after pixels = ", pixels);
     		float[] pixelvals = new float[maxSz*maxSz];
     		//Debug.Log("***Pixels: " + pixels.ToString());
-    	if(pxType = eRGB){
+    	if(pxType == PixelType.eRGB){
 			// get texture and send it over osc
 			OscMessage message_r;
 			OscMessage message_g;
