@@ -14,6 +14,8 @@ public class FrustumObjects : MonoBehaviour
     public GameObject []Goals;
     public OSC osc;
 
+    GameObject Parent;
+
     
  
     // Start is called before the first frame update
@@ -27,6 +29,9 @@ public class FrustumObjects : MonoBehaviour
         Borders = GameObject.FindGameObjectsWithTag("Border");
         Obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
         Goals = GameObject.FindGameObjectsWithTag("Goal");
+        Parent = new GameObject();
+        Parent.name = "FrustumObjects_Parent";
+        Parent.transform.rotation = Quaternion.Euler(0f,0f,0f);
         //Agent = GameObject.FindGameObjectsWithTag("Agent")
     }
     // List<Tuple<Vector3, Vector3>>  GetBBox(GameObject []collection)
@@ -111,22 +116,22 @@ public class FrustumObjects : MonoBehaviour
 
     List<Tuple<Vector3, Vector3>>  CalculateLocalBounds(GameObject []objects)
     {
-        GameObject parent = new GameObject();
-        Quaternion currentRotation = parent.transform.rotation;
-        parent.transform.rotation = Quaternion.Euler(0f,0f,0f);
+        
+        Quaternion currentRotation = Parent.transform.rotation;
+        
         
         foreach( GameObject obj in objects)
         {
-            obj.transform.parent = parent.transform;
+            obj.transform.parent = Parent.transform;
         }
-        Bounds bounds = new Bounds(parent.transform.position, Vector3.zero);
+        Bounds bounds = new Bounds(Parent.transform.position, Vector3.zero);
 
-        foreach(Renderer renderer in parent.GetComponentsInChildren<Renderer>())
+        foreach(Renderer renderer in Parent.GetComponentsInChildren<Renderer>())
         {
             bounds.Encapsulate(renderer.bounds);
         }
 
-        Vector3 localCenter = bounds.center - parent.transform.position;
+        Vector3 localCenter = bounds.center - Parent.transform.position;
         bounds.center = localCenter;
         Debug.Log("The local bounds of this model is " + bounds);
 
@@ -139,6 +144,7 @@ public class FrustumObjects : MonoBehaviour
             Vector3 coord = obj.transform.localPosition - localCenter/ 2.0F;
             Vector3 bbox = obj.GetComponent<Collider>().bounds.extents;
             retval.Add(Tuple.Create(coord, bbox));
+            obj.transform.parent = null;
             
         }
         return retval;
