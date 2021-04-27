@@ -20,6 +20,7 @@ public class CamTextureSend : MonoBehaviour
 	 public bool send_depth=true;
 	 public bool send_right=true;
 	 public bool send_left=true;
+	 public bool send_png=true;
 	 enum PixelType {eRGB, eGray};
 
 
@@ -80,7 +81,7 @@ public class CamTextureSend : MonoBehaviour
  			//sendTexture.Apply();
  			Texture2D newTex = Instantiate(sendTexture);	
  			TextureScale.Bilinear (newTex, maxSz, maxSz);
-    		
+    		byte[] pngdata = newTex.EncodeToPNG();
     		pixels = newTex.GetPixels();
     		//debug("**after pixels = ", pixels);
     		float[] pixelvals = new float[maxSz*maxSz];
@@ -90,13 +91,16 @@ public class CamTextureSend : MonoBehaviour
 			OscMessage message_r;
 			OscMessage message_g;
 			OscMessage message_b;
+			OscMessage message_png;
 
 			message_r = new OscMessage();
 			message_g = new OscMessage();
 			message_b = new OscMessage();
+			message_png = new OscMessage();
 			message_r.address = "/" + msgTag + "/camera_r";
 			message_g.address = "/" + msgTag + "/camera_g";
 			message_b.address = "/" + msgTag + "/camera_b";
+			message_png.address = "/" + msgTag + "/camera_png";
 			//for(int i=0; i<renderTexture.width * renderTexture.height; i++){
 			//Debug.Log("osc update, pixel length: " + pixels.Length);	
 			for(int i=0; i<Mathf.Min(pixels.Length, maxSz*maxSz); i++){
@@ -104,10 +108,16 @@ public class CamTextureSend : MonoBehaviour
 					message_g.values.Add((float)pixels[i].g);
 					message_b.values.Add((float)pixels[i].b);
 			}
+			for(int i=0; i<Mathf.Min(pngdata.Length, maxSz*maxSz); i++){
+				int tmp = (int)(pngdata[i]);// & 0xff);
+				message_png.values.Add(tmp);
+			}
 			//message.values.Add(pixelvals);
 			osc.Send(message_r);
 			osc.Send(message_g);
 			osc.Send(message_b);
+			if(send_png)
+				osc.Send(message_png);
 			//DestroyImmediate(renderTexture);
 			message_r = null;
 			message_g = null;

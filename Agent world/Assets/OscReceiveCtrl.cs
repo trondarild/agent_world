@@ -44,11 +44,13 @@ public class OscReceiveCtrl : MonoBehaviour
         float x = message.GetFloat(0);
         float rotation = -x*Time.deltaTime;
         playerBody.Rotate(Vector3.up * rotation);
+        Debug.Log("osc update, received rotleft: " + x);
     }
 
     void OnRotRight(OscMessage message){
         float x = message.GetFloat(0);
         float rotation = x*Time.deltaTime;
         playerBody.Rotate(Vector3.up * rotation);
+        Debug.Log("osc update, received rotright: " + x);
     }
 }
