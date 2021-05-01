@@ -67,11 +67,11 @@ public class FrustumObjects : MonoBehaviour
             // }
  
         }
-        print ("visible obj: " + Collected.Count);
+        //print ("visible obj: " + Collected.Count);
         // TODO send over osc
         foreach (Tuple<Vector3, Vector3> obj in Collected)
         {
-            print ("center: " + obj.Item1 + "; box: " + obj.Item2);
+            //print ("center: " + obj.Item1 + "; box: " + obj.Item2);
         }
         return Collected;
     }
@@ -95,7 +95,7 @@ public class FrustumObjects : MonoBehaviour
         OscMessage m = new OscMessage();
         m.address = label;
         
-        print("data: " + data.Count);
+        //print("data: " + data.Count);
         String dbg = "";
         foreach (Tuple<Vector3, Vector3> obj in data)
         {
@@ -109,11 +109,14 @@ public class FrustumObjects : MonoBehaviour
             m.values.Add((float)bbox[2]);
             dbg += bbox[0] + ", " + bbox[2] + "; ";
         }
-        print (dbg);
+        //print (dbg);
         osc.Send(m);
         
     }
 
+    /*
+    * Return: list of tuple containing position and width, height, depth
+    */
     List<Tuple<Vector3, Vector3>>  CalculateLocalBounds(GameObject []objects)
     {
         
@@ -133,7 +136,7 @@ public class FrustumObjects : MonoBehaviour
 
         Vector3 localCenter = bounds.center - Parent.transform.position;
         bounds.center = localCenter;
-        Debug.Log("The local bounds of this model is " + bounds);
+        //Debug.Log("The local bounds of this model is " + bounds);
 
         this.transform.rotation = currentRotation;
 
