@@ -13,6 +13,8 @@ public class CamMovementSend : MonoBehaviour
     public bool send_translation=true;
     Quaternion prev_rot;
     Vector3 prev_pos;
+
+    bool first = true;
     void Start()
     {
         
@@ -29,7 +31,8 @@ public class CamMovementSend : MonoBehaviour
             OscMessage message_rot = new OscMessage();
             message_rot.address = "/camera/rotation";
             message_rot.values.Add(rot);
-            osc.Send(message_rot);
+            if(!first)
+                osc.Send(message_rot);
             prev_rot.Set(dir.x, dir.y, dir.z, dir.w);
 
         }
@@ -38,14 +41,16 @@ public class CamMovementSend : MonoBehaviour
             Vector3 trans = prev_pos - pos;
             OscMessage message_trans = new OscMessage();
             message_trans.address = "/camera/translation";
-            message_trans.values.Add(trans[0]);
-            message_trans.values.Add(trans[1]);
-            message_trans.values.Add(trans[2]);
-            osc.Send(message_trans);
+            message_trans.values.Add(trans.x);
+            message_trans.values.Add(trans.y);
+            message_trans.values.Add(trans.z);
+            if(!first)
+                osc.Send(message_trans);
             prev_pos.x = pos.x;
             prev_pos.y = pos.y;
             prev_pos.z = pos.z;
 
         }
+        first = false;
     }
 }

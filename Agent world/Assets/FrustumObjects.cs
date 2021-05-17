@@ -12,6 +12,7 @@ public class FrustumObjects : MonoBehaviour
     public GameObject []Borders;
     public GameObject []Obstacles;
     public GameObject []Goals;
+    public GameObject []Agents;
     public OSC osc;
 
     GameObject Parent;
@@ -29,9 +30,10 @@ public class FrustumObjects : MonoBehaviour
         Borders = GameObject.FindGameObjectsWithTag("Border");
         Obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
         Goals = GameObject.FindGameObjectsWithTag("Goal");
+        Agents = GameObject.FindGameObjectsWithTag("Agent");
         Parent = new GameObject();
         Parent.name = "FrustumObjects_Parent";
-        Parent.transform.rotation = Quaternion.Euler(0f,0f,0f);
+        //Parent.transform.rotation = Quaternion.Euler(0f,0f,0f);
         //Agent = GameObject.FindGameObjectsWithTag("Agent")
     }
     // List<Tuple<Vector3, Vector3>>  GetBBox(GameObject []collection)
@@ -80,14 +82,19 @@ public class FrustumObjects : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var collectedBorders = FindFrustumObjects(Borders);
-        var collectedObstacles = FindFrustumObjects(Obstacles);
-        var collectedGoals = FindFrustumObjects(Goals);
+        // var collectedBorders = FindFrustumObjects(Borders);
+        // var collectedObstacles = FindFrustumObjects(Obstacles);
+        // var collectedGoals = FindFrustumObjects(Goals);
 
-        var bboxes =  CalculateLocalBounds(Borders);
-
+        var border_bboxes =  CalculateLocalBounds(Borders);
         // send collections over osc
-        SendMsg("/borders/", bboxes);
+        SendMsg("/borders/", border_bboxes);
+        var obst_bboxes = CalculateLocalBounds(Obstacles);
+        SendMsg("/obstacles/", obst_bboxes);
+        var goal_bboxes = CalculateLocalBounds(Goals);
+        SendMsg("/goals/", goal_bboxes);
+        var agent_bboxes = CalculateLocalBounds(Agents);
+        SendMsg("/agents/", agent_bboxes);
     }
 
     void SendMsg(String label, List<Tuple<Vector3, Vector3>>  data)
@@ -138,14 +145,14 @@ public class FrustumObjects : MonoBehaviour
         bounds.center = localCenter;
         //Debug.Log("The local bounds of this model is " + bounds);
 
-        this.transform.rotation = currentRotation;
+        //this.transform.rotation = currentRotation;
 
         List<Tuple<Vector3, Vector3>> retval = new List<Tuple<Vector3, Vector3>>() ;
         
         foreach(GameObject obj in objects)
         {
             Vector3 coord = obj.transform.localPosition - localCenter/ 2.0F;
-            Vector3 bbox = obj.GetComponent<Collider>().bounds.extents;
+            Vector3 bbox = obj.GetComponent<Renderer>().bounds.extents; // renderer gives allo pos and size
             retval.Add(Tuple.Create(coord, bbox));
             obj.transform.parent = null;
             
