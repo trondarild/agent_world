@@ -10,6 +10,7 @@ public class CamMovementSend : MonoBehaviour
     public Camera sourceCam;
     public OSC osc;
     public bool send_rotation=true;
+    public bool send_abs_rotation=true;
     public bool send_translation=true;
     Quaternion prev_rot;
     Vector3 prev_pos;
@@ -35,6 +36,17 @@ public class CamMovementSend : MonoBehaviour
                 osc.Send(message_rot);
             prev_rot.Set(dir.x, dir.y, dir.z, dir.w);
 
+        }
+        if(send_abs_rotation){
+            Quaternion dir = sourceCam.transform.rotation;
+            //float rot = Quaternion.Angle(prev_rot,dir);
+            float rot = dir.eulerAngles.y;
+            OscMessage message_rot = new OscMessage();
+            message_rot.address = "/camera/absrotation";
+            message_rot.values.Add(rot);
+            if(!first)
+                osc.Send(message_rot);
+            
         }
         if(send_translation){
             Vector3 pos = sourceCam.transform.position;

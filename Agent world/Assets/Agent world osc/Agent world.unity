@@ -1020,6 +1020,102 @@ Transform:
   m_Father: {fileID: 439820600}
   m_RootOrder: 57
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &228220593
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 228220594}
+  - component: {fileID: 228220597}
+  - component: {fileID: 228220596}
+  - component: {fileID: 228220595}
+  m_Layer: 0
+  m_Name: Cylinder (12)
+  m_TagString: Obstacle
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &228220594
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 228220593}
+  m_LocalRotation: {x: -0, y: -0.7133636, z: -0, w: 0.7007942}
+  m_LocalPosition: {x: 331.29, y: 2.5860662, z: 14.15}
+  m_LocalScale: {x: 0.25, y: 3.1766, z: 0.25}
+  m_Children: []
+  m_Father: {fileID: 1370515147}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: -91.018, z: 0}
+--- !u!136 &228220595
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 228220593}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5000001
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!23 &228220596
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 228220593}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &228220597
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 228220593}
+  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &229611859 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4129686743165072, guid: ce4192f2b3cb01b4ea33251fa9ea76ed, type: 3}
@@ -9106,6 +9202,7 @@ Transform:
   - {fileID: 1801887963}
   - {fileID: 1566098732}
   - {fileID: 553859221}
+  - {fileID: 228220594}
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9986,8 +10083,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1463285700}
-  m_LocalRotation: {x: -0.000000013058875, y: 0.99999833, z: 0.0000001177853, w: -0.0018168737}
-  m_LocalPosition: {x: 40.85, y: 1, z: 24.56}
+  m_LocalRotation: {x: -0.00000009318335, y: 0.6994185, z: 0.00000007321731, w: -0.7147124}
+  m_LocalPosition: {x: 42.02181, y: 1, z: 22.778473}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 298369667}
@@ -10000,7 +10097,7 @@ Transform:
   - {fileID: 742407749}
   m_Father: {fileID: 0}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 180.208, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 271.239, z: 0}
 --- !u!114 &1463285703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10064,7 +10161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ef46459986c6461484abd050f8c542b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayCamera: {fileID: 175835952}
+  displayCamera: {fileID: 2026049505}
   Borders: []
   Obstacles: []
   Goals: []
