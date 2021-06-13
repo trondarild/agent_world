@@ -35,8 +35,10 @@ public class OscReceiveCtrl : MonoBehaviour
 	}
 
     void OnBackward(OscMessage message){
-        float x = message.GetFloat(0);
-        Vector3 move = transform.forward * -x; 
+        float z = message.GetFloat(0);
+        Debug.Log("osc update, received backward: " + z);	
+
+        Vector3 move = transform.forward * -z; 
         controller.Move(move * Time.deltaTime);
     }
 

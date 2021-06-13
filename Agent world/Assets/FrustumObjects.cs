@@ -14,6 +14,13 @@ public class FrustumObjects : MonoBehaviour
     public GameObject []Goals;
     public GameObject []Agents;
     public OSC osc;
+    
+    public enum DetourConfig  {eVShape, eDelayed, eFourCompartment};
+    public DetourConfig config = DetourConfig.eVShape;
+
+    string[] config_names = {"V_Obstacle", "Delayed_Detour_Obstacle", "Four_Compartment_Obstacle"};
+    string[] config_postfix = {"VO", "DDO", "FCO"};
+    string[] content_names = {"Goal", "Outer_Walls", "Obstacles"};
 
     GameObject Parent;
 
@@ -26,10 +33,17 @@ public class FrustumObjects : MonoBehaviour
         {
             displayCamera = Camera.main;
         }
- 
-        Borders = GameObject.FindGameObjectsWithTag("Border");
-        Obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
-        Goals = GameObject.FindGameObjectsWithTag("Goal");
+        // find the selected parent
+        GameObject localparent = GameObject.Find(config_names[(int)config]);
+        //print("parent: " + Parent.name);
+        // Borders = GameObject.FindGameObjectsWithTag("Border");
+        // Obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
+        // Goals = GameObject.FindGameObjectsWithTag("Goal");
+        Borders = GetChildObject(localparent.transform, "Border").ToArray();        
+        Obstacles = GetChildObject(localparent.transform, "Obstacle").ToArray();
+        Goals = GetChildObject(localparent.transform, "Goal").ToArray();
+        //print("goals: " + Goals[0].name);
+
         Agents = GameObject.FindGameObjectsWithTag("Agent");
         Parent = new GameObject();
         Parent.name = "FrustumObjects_Parent";
@@ -159,4 +173,23 @@ public class FrustumObjects : MonoBehaviour
         }
         return retval;
     }
+
+    List<GameObject> GetChildObject(Transform parent, string _tag)
+    {
+        List<GameObject> ret = new List<GameObject>();
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            Transform child = parent.GetChild(i);
+            if (child.tag == _tag)
+            {
+                ret.Add(child.gameObject);
+            }
+            if (child.childCount > 0)
+            {
+                ret.AddRange(GetChildObject(child, _tag));
+            }
+        }
+        return ret;
+    }
 }
+
