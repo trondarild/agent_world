@@ -109,6 +109,7 @@ public class FrustumObjects : MonoBehaviour
         SendMsg("/goals/", goal_bboxes);
         var agent_bboxes = CalculateLocalBounds(Agents);
         SendMsg("/agents/", agent_bboxes);
+        SendMsg("/config/", (float)config);
     }
 
     void SendMsg(String label, List<Tuple<Vector3, Vector3>>  data)
@@ -133,6 +134,13 @@ public class FrustumObjects : MonoBehaviour
         //print (dbg);
         osc.Send(m);
         
+    }
+
+    void SendMsg(String label, float val){
+        OscMessage m = new OscMessage();
+        m.address = label;
+        m.values.Add(val);
+        osc.Send(m);
     }
 
     /*
