@@ -9,6 +9,7 @@ public class OscReceiveCtrl : MonoBehaviour
     public Transform playerBody;
     public Vector3 resetPosition;
     public Vector3 resetRotation;
+    bool posSemaphore = true;
     // public float rotation=0;
     // Start is called before the first frame update
     void Start()
@@ -27,13 +28,17 @@ public class OscReceiveCtrl : MonoBehaviour
     }
 
     void OnForward(OscMessage message){
-        // get intensity of forward
-		float z = message.GetFloat(0);
-        Debug.Log("osc update, received forward: " + z);	
+        //if(posSemaphore){
+            posSemaphore = false;
+            // get intensity of forward
+            float z = message.GetFloat(0);
+            Debug.Log("osc update, received forward: " + z);	
 
-        Vector3 move = transform.forward * z; 
-        controller.Move(move * Time.deltaTime);
-        
+            Vector3 move = transform.forward * z; 
+            controller.Move(move * Time.deltaTime);
+            //controller.transform.position += move* Time.deltaTime;
+            posSemaphore = true;
+        //}
 		
 	}
 
@@ -60,15 +65,23 @@ public class OscReceiveCtrl : MonoBehaviour
     }
 
     void OnReset(OscMessage message){
-        Quaternion tmp = Quaternion.Euler(resetRotation);
+        Quaternion resetQuat = Quaternion.Euler(resetRotation);
         //Quaternion q = new Quaternion();
         //q.SetFromToRotation(playerBody.rotation, tmp);
         
         //playerBody.position = resetPosition;
-        controller.transform.rotation = Quaternion.identity*tmp;
-        //playerBody.SetPositionAndRotation(resetPosition, q);
-        controller.Move(resetPosition - playerBody.position);
-        //playerBody.Rotate(q);
-        Debug.Log("received reset: " + playerBody.position + "; " + playerBody);
+        controller.transform.rotation = Quaternion.identity*resetQuat;
+        //if(posSemaphore){
+            posSemaphore=false;
+            //controller.transform.position = resetPosition;
+            //Debug.Log("reset pos=" + resetPosition);
+            //playerBody.SetPositionAndRotation(resetPosition, q);
+            Vector3 tmp = Vector3.up * 100;
+            controller.Move(tmp - playerBody.position);
+            controller.Move(resetPosition - tmp);
+            //playerBody.Rotate(q);
+            Debug.Log("received reset: " + playerBody.position + "; " + playerBody);
+            posSemaphore = true;
+        //}
     }
 }

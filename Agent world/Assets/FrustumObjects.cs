@@ -13,6 +13,7 @@ public class FrustumObjects : MonoBehaviour
     public GameObject []Obstacles;
     public GameObject []Goals;
     public GameObject []Agents;
+    public GameObject []BarrierAreas;
     public OSC osc;
     
     public enum DetourConfig  {eVShape, eDelayed, eFourCompartment};
@@ -20,7 +21,7 @@ public class FrustumObjects : MonoBehaviour
 
     string[] config_names = {"V_Obstacle", "Delayed_Detour_Obstacle", "Four_Compartment_Obstacle"};
     string[] config_postfix = {"VO", "DDO", "FCO"};
-    string[] content_names = {"Goal", "Outer_Walls", "Obstacles"};
+    string[] content_names = {"Goal", "Outer_Walls", "Obstacles", "BarrierArea"};
 
     GameObject Parent;
 
@@ -42,6 +43,7 @@ public class FrustumObjects : MonoBehaviour
         Borders = GetChildObject(localparent.transform, "Border").ToArray();        
         Obstacles = GetChildObject(localparent.transform, "Obstacle").ToArray();
         Goals = GetChildObject(localparent.transform, "Goal").ToArray();
+        BarrierAreas = GetChildObject(localparent.transform, "BarrierArea").ToArray();
         //print("goals: " + Goals[0].name);
 
         Agents = GameObject.FindGameObjectsWithTag("Agent");
@@ -109,6 +111,8 @@ public class FrustumObjects : MonoBehaviour
         SendMsg("/goals/", goal_bboxes);
         var agent_bboxes = CalculateLocalBounds(Agents);
         SendMsg("/agents/", agent_bboxes);
+        var barrier_bboxes = CalculateLocalBounds(BarrierAreas);
+        SendMsg("/barrierareas/", barrier_bboxes);
         SendMsg("/config/", (float)config);
     }
 
@@ -133,7 +137,7 @@ public class FrustumObjects : MonoBehaviour
         }
         //print (dbg);
         osc.Send(m);
-        
+        m = null;
     }
 
     void SendMsg(String label, float val){
@@ -141,6 +145,7 @@ public class FrustumObjects : MonoBehaviour
         m.address = label;
         m.values.Add(val);
         osc.Send(m);
+        m = null;
     }
 
     /*
@@ -179,6 +184,7 @@ public class FrustumObjects : MonoBehaviour
             obj.transform.parent = null;
             
         }
+        
         return retval;
     }
 

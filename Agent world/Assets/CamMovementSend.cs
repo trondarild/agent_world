@@ -78,6 +78,7 @@ public class CamMovementSend : MonoBehaviour
                 message.address = "/ready";
                 message.values.Add(1.0);
                 osc.Send(message);
+                Debug.Log("==sent ready==");
             }
 
         }
