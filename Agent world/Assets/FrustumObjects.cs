@@ -102,16 +102,29 @@ public class FrustumObjects : MonoBehaviour
         // var collectedObstacles = FindFrustumObjects(Obstacles);
         // var collectedGoals = FindFrustumObjects(Goals);
 
-        var border_bboxes =  CalculateLocalBounds(Borders);
+        // var border_bboxes =  CalculateLocalBounds(Borders);
+        // // send collections over osc
+        // SendMsg("/borders/", border_bboxes);
+        // var obst_bboxes = CalculateLocalBounds(Obstacles);
+        // SendMsg("/obstacles/", obst_bboxes);
+        // var goal_bboxes = CalculateLocalBounds(Goals);
+        // SendMsg("/goals/", goal_bboxes);
+        // var agent_bboxes = CalculateLocalBounds(Agents);
+        // SendMsg("/agents/", agent_bboxes);
+        // var barrier_bboxes = CalculateLocalBounds(BarrierAreas);
+        // SendMsg("/barrierareas/", barrier_bboxes);
+        // SendMsg("/config/", (float)config);
+
+        var border_bboxes =  CalculateGlobalBounds(Borders);
         // send collections over osc
         SendMsg("/borders/", border_bboxes);
-        var obst_bboxes = CalculateLocalBounds(Obstacles);
+        var obst_bboxes = CalculateGlobalBounds(Obstacles);
         SendMsg("/obstacles/", obst_bboxes);
-        var goal_bboxes = CalculateLocalBounds(Goals);
+        var goal_bboxes = CalculateGlobalBounds(Goals);
         SendMsg("/goals/", goal_bboxes);
-        var agent_bboxes = CalculateLocalBounds(Agents);
+        var agent_bboxes = CalculateGlobalBounds(Agents);
         SendMsg("/agents/", agent_bboxes);
-        var barrier_bboxes = CalculateLocalBounds(BarrierAreas);
+        var barrier_bboxes = CalculateGlobalBounds(BarrierAreas);
         SendMsg("/barrierareas/", barrier_bboxes);
         SendMsg("/config/", (float)config);
     }
@@ -147,6 +160,46 @@ public class FrustumObjects : MonoBehaviour
         osc.Send(m);
         m = null;
     }
+    /*
+    * Return: list of tuple containing position and width, height, depth
+    */
+    List<Tuple<Vector3, Vector3>>  CalculateGlobalBounds(GameObject []objects)
+    {
+        /*
+        Quaternion currentRotation = Parent.transform.rotation;
+        
+        
+        foreach( GameObject obj in objects)
+        {
+            obj.transform.parent = Parent.transform;
+        }
+        */
+        Bounds bounds = new Bounds(Parent.transform.position, Vector3.zero);
+
+        foreach(Renderer renderer in Parent.GetComponentsInChildren<Renderer>()){
+            bounds.Encapsulate(renderer.bounds);
+        }
+
+        //Vector3 localCenter = bounds.center - Parent.transform.position;
+        //bounds.center = localCenter;
+        //Debug.Log("The local bounds of this model is " + bounds);
+
+        //this.transform.rotation = currentRotation;
+
+        List<Tuple<Vector3, Vector3>> retval = new List<Tuple<Vector3, Vector3>>() ;
+        
+        foreach(GameObject obj in objects)
+        {
+            Vector3 coord = obj.transform.position; //localPosition - localCenter/ 2.0F;
+            Vector3 bbox = obj.GetComponent<Renderer>().bounds.extents; // renderer gives allo pos and size
+            retval.Add(Tuple.Create(coord, bbox));
+            obj.transform.parent = null;
+            
+        }
+        
+        return retval;
+    }
+
 
     /*
     * Return: list of tuple containing position and width, height, depth
