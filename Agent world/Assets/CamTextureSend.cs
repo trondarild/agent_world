@@ -22,7 +22,9 @@ public class CamTextureSend : MonoBehaviour
 	 public bool send_left=true;
 	 public bool send_png=true;
 	 enum PixelType {eRGB, eGray};
-
+	RenderTexture depthTexture;
+	RenderTexture leftTexture;
+	Rect rect;
 
 	void Start () {
 		//osc = new OSC();
@@ -36,6 +38,11 @@ public class CamTextureSend : MonoBehaviour
 	  
 	  // Set send texture
 	  //sender.SetSourceTexture(sendTexture);
+	  rect = new Rect(0,0,0,0);
+	  if(send_depth)
+	   	depthTexture = new RenderTexture(sourceCamLeft.pixelWidth, sourceCamLeft.pixelHeight, 24);
+	if(send_left)
+		leftTexture = new RenderTexture(sourceCamLeft.pixelWidth, sourceCamLeft.pixelHeight, 24);
 	}
 
     // Update is called once per frame
@@ -43,36 +50,40 @@ public class CamTextureSend : MonoBehaviour
 		// left cam can send depth image; send and turn off
 		if(send_depth){
 			sourceCamLeft.GetComponent<RenderDepth>().enabled = true;
-			SendCamera(sourceCamLeft,
+			SendCamera(sourceCamLeft, depthTexture,
 						"left/depth", PixelType.eGray);
 			sourceCamLeft.GetComponent<RenderDepth>().enabled = false;	
 		}
 		if(send_left)
-			SendCamera(sourceCamLeft,
+			SendCamera(sourceCamLeft, leftTexture,
 					"left", PixelType.eRGB);			
 		if(send_right)
-			SendCamera(sourceCamRight,
+			SendCamera(sourceCamRight, leftTexture,
 					"right", PixelType.eRGB);
 	}
 
     void SendCamera(//Texture2D sendTexture,
 					//RenderTexture renderTexture,
 					Camera sourceCam,
+					RenderTexture renderTexture,
 					String msgTag,
 					PixelType pxType) {
-    		RenderTexture renderTexture = new RenderTexture(sourceCam.pixelWidth, sourceCam.pixelHeight, 24);
+    		//RenderTexture renderTexture = new RenderTexture(sourceCam.pixelWidth, sourceCam.pixelHeight, 24);
     		sourceCam.targetTexture = renderTexture;
     		sourceCam.Render();
     		RenderTexture.active = renderTexture;
-    		Rect r = new Rect(0, 0, renderTexture.width, renderTexture.height);
+    		//Rect r = new Rect(0, 0, renderTexture.width, renderTexture.height);
+			rect.width = renderTexture.width;
+			rect.height = renderTexture.height;
     		var textureFormat = TextureFormat.RGB24;
 			if(pxType == PixelType.eRGB)
 				textureFormat = TextureFormat.RGB24;
 			else
 				textureFormat = TextureFormat.R8;
     		Texture2D sendTexture = new Texture2D(renderTexture.width, renderTexture.height, textureFormat, false);	
-    		sendTexture.ReadPixels(r, 0, 0);
+    		sendTexture.ReadPixels(rect, 0, 0);
  			sendTexture.Apply();
+			 
  			
  			Color[] pixels = sendTexture.GetPixels();
  			//debug("**before pixels = ", pixels);
@@ -84,7 +95,7 @@ public class CamTextureSend : MonoBehaviour
     		byte[] pngdata = newTex.EncodeToPNG();
     		pixels = newTex.GetPixels();
     		//debug("**after pixels = ", pixels);
-    		float[] pixelvals = new float[maxSz*maxSz];
+    		//float[] pixelvals = new float[maxSz*maxSz];
     		//Debug.Log("***Pixels: " + pixels.ToString());
     	if(pxType == PixelType.eRGB){
 			// get texture and send it over osc
@@ -144,8 +155,8 @@ public class CamTextureSend : MonoBehaviour
 		
        
 
-		renderTexture = null;
-		sendTexture = null;
+		//renderTexture = null;
+		Destroy(sendTexture);// = null;
     }
 
     void debug(String txt, Color[] a){
